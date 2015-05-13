@@ -2,36 +2,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-
-#define IS_BIG_ENDIAN (*(uint16_t *)"\0\xff" < 0x100)
-
-uint32_t rotr32(uint n, uint32_t x){
-  if(n>32){
-    n %= 32;
-  }
-  return x>>n | x<<(32-n);
-}
-
-uint32_t rotl32(uint n, uint32_t x){
-  if(n>32){
-    n %= 32;
-  }
-  return x<<n | x>>(32-n);
-}
-
-uint64_t rotr64(uint n, uint64_t x){
-  if(n>64){
-    n %= 64;
-  }
-  return x>>n | x<<(64-n);
-}
-
-uint64_t rotl64(uint n, uint64_t x){
-  if(n>64){
-    n %= 64;
-  }
-  return x<<n | x>>(64-n);
-}
+#include "bit_manip.h"
 
 uint32_t ch32(uint32_t x, uint32_t y, uint32_t z){
   return (x&y)^(~x&z);
@@ -215,57 +186,54 @@ uint32_t sha1_H0[5] = {0x67452301,
 		       0x10325476,
 		       0xc3d2e1f0};
 
-uint32_t sha1_H[5] = { 0 };
-
-void byte_print(uint64_t len, uint8_t* bytes){
-  int i;
-  for(i=0;i<len;++i){
-    if(i%8 == 0 && i != 0){
-      printf(" ");
-    }
-    printf("%02x", bytes[i]);
+/**
+ * Single round of SHA-1.
+ * 
+ * @param H_old initial hash values: 5 32-bit integers 
+ * @param H_new end of round hash values: 5 32-bit integers 
+ * @param M message blocks: 16 32-bit integers
+ * @return Next set of hash values.
+ */
+void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
+  /* Initialize the message schedule */
+  uint32_t W[80];
+  int t;
+  printf("\n|");
+  for(t=0;t<16;++t){
+    W[t]=M[t];
+    printf("%08x|%d|",W[t],t);
   }
-}
-
-uint32_t bytes_to_uint32(uint8_t* bytes){
-  uint32_t result=0;
-  if(IS_BIG_ENDIAN){
-    result = *((uint32_t*)bytes);
-  }else{
-    result = bytes[0];
-    result <<= 8;
-    result |= bytes[1];
-    result <<= 8;
-    result |= bytes[2];
-    result <<= 8;
-    result |= bytes[3];
+  printf("\n");
+  for(t=16;t<80;++t){
+    printf("%d,",t);
+    rotl32(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
   }
-  return result;
-}
-
-uint64_t bytes_to_uint64(uint8_t* bytes){
-  uint64_t result=0;
-  if(IS_BIG_ENDIAN){
-    result = *((uint64_t*)bytes);
-  }else{
-    result = bytes[0];
-    result <<= 8;
-    result |= bytes[1];
-    result <<= 8;
-    result |= bytes[2];
-    result <<= 8;
-    result |= bytes[3];
-    result <<= 8;
-    result |= bytes[4];
-    result <<= 8;
-    result |= bytes[5];
-    result <<= 8;
-    result |= bytes[6];
-    result <<= 8;
-    result |= bytes[7];
-
+  printf("\n");
+  /* Initialize the working variables */
+  uint32_t a, b, c, d, e, T;
+  a=H_old[0];
+  b=H_old[1];
+  c=H_old[2];
+  d=H_old[3];
+  e=H_old[4];
+  /* Perform work */
+  printf("a=%08x, b=%08x, c=%08x, d=%08x, e=%08x\n",a,b,c,d,e);
+  printf("H_old=%08x, %08x, %08x, %08x, %08x\n",H_old[0],H_old[1],H_old[2],H_old[3],H_old[4]);
+  for(t=0;t<80;++t){
+    T=rotl32(5,a)+sha1_f(t,b,c,d)+e+sha1_k(t)+W[t];
+    e=d;
+    d=c;
+    c=rotl32(30,b);
+    b=a;
+    a=T;
+    printf("a=%08x, b=%08x, c=%08x, d=%08x, e=%08x\n",a,b,c,d,e);
   }
-  return result;
+  H_new[0]=a+H_old[0];
+  H_new[1]=b+H_old[1];
+  H_new[2]=c+H_old[2];
+  H_new[3]=d+H_old[3];
+  H_new[4]=e+H_old[4];
+  printf("H_new=%08x, %08x, %08x, %08x, %08x\n",H_new[0],H_new[1],H_new[2],H_new[3],H_new[4]);
 }
 
 int main(int argc, char **argv){
@@ -288,7 +256,6 @@ int main(int argc, char **argv){
   printf("\n");
   byte_print(out_len,out);
   printf("\nExpected:\n");
-  printf(" 1 2 3 4  5 6 7 8  9101112 ........ 57585960 61626364\n");
   printf("61626380 00000000 00000000 ........ 00000000 00000018\n");
 
   printf("sha1_H0[1] = %x\n",sha1_H0[1]);
@@ -296,5 +263,13 @@ int main(int argc, char **argv){
   uint8_t bytelist[4] = {0xa1,0xa2,0xa3,0xa4};
   byte_print(4,bytelist);
   printf("\nbyteto32 = %x\n",  bytes_to_uint32(bytelist));
+  uint32_t H1[5];
+  uint32_t* chunked_msg;
+  chunked_msg=bytes_to_uint32_arr(out_len,out);
+  sha1_round(sha1_H0,H1,chunked_msg);
+  printf("H=%x %x %x %x %x\n",H1[0],H1[1],H1[2],H1[3],H1[4]);
+  printf("E=afa6c8b3 a2fae957 85dc7d96 85a57835 d703ac88\n");
+  printf("%08x %08x\n",rotl32(8,0x00000001),rotl32(8,0x10000000));
+  printf("%08x %08x\n",rotr32(8,0x00000001),rotr32(8,0x10000000));
   return EXIT_SUCCESS;
 }
