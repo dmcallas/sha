@@ -5,28 +5,28 @@
 
 #include "bit_manip.h"
 
-uint32_t rotr32(uint n, uint32_t x){
+uint32_t rotr32(unsigned int n, uint32_t x){
   if(n>32){
     n %= 32;
   }
   return x>>n | x<<(32-n);
 }
 
-uint32_t rotl32(uint n, uint32_t x){
+uint32_t rotl32(unsigned int n, uint32_t x){
   if(n>32){
     n %= 32;
   }
   return x<<n | x>>(32-n);
 }
 
-uint64_t rotr64(uint n, uint64_t x){
+uint64_t rotr64(unsigned int n, uint64_t x){
   if(n>64){
     n %= 64;
   }
   return x>>n | x<<(64-n);
 }
 
-uint64_t rotl64(uint n, uint64_t x){
+uint64_t rotl64(unsigned int n, uint64_t x){
   if(n>64){
     n %= 64;
   }

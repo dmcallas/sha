@@ -13,28 +13,28 @@
  * @param n Number of bits to rotate by.
  * @param x Word to rotate.
  */
-uint32_t rotr32(uint n, uint32_t x);
+uint32_t rotr32(unsigned int n, uint32_t x);
 
 /**
  * Rotate bits of a uint32_t to the left.
  * @param n Number of bits to rotate by.
  * @param x Word to rotate.
  */
-uint32_t rotl32(uint n, uint32_t x);
+uint32_t rotl32(unsigned int n, uint32_t x);
 
 /**
  * Rotate bits of a uint64_t to the right.
  * @param n Number of bits to rotate by.
  * @param x Word to rotate.
  */
-uint64_t rotr64(uint n, uint64_t x);
+uint64_t rotr64(unsigned int n, uint64_t x);
 
 /**
  * Rotate bits of a uint64_t to the left.
  * @param n Number of bits to rotate by.
  * @param x Word to rotate.
  */
-uint64_t rotl64(uint n, uint64_t x);
+uint64_t rotl64(unsigned int n, uint64_t x);
 
 /**
  * Print a byte array in hex.

@@ -24,7 +24,7 @@ uint64_t maj64(uint64_t x, uint64_t y, uint64_t z){
   return (x&y)^(x&z)^(y&z);
 }
 
-uint32_t sha1_f(uint t, uint32_t x, uint32_t y, uint32_t z){
+uint32_t sha1_f(unsigned int t, uint32_t x, uint32_t y, uint32_t z){
   if(t<=19){
     return ch32(x,y,z);
   }
@@ -73,7 +73,7 @@ uint64_t s1_512(uint64_t x){
   return rotr64(19,x) ^ rotr64(61,x) ^ x>>6;
 }
 
-uint32_t sha1_k(uint t){
+uint32_t sha1_k(unsigned int t){
   if(t<=19){
     return 0x5a827999;
   }
