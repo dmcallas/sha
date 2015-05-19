@@ -19,7 +19,7 @@ else
 	TARGET_EXTENSION=
 endif
 
-UNITY_ROOT=Unity/
+UNITY_ROOT=Unity
 C_COMPILER=gcc
 
 CFLAGS = -std=c99
@@ -46,11 +46,13 @@ TARGET_BUILD_F=sha
 TARGET_BUILD = $(TARGET_BUILD_F)$(TARGET_EXTENSION)
 SRC_FILES_BUILD=\
   src/bit_manip.c \
-  src/sha.c
+  src/sha1.c \
+  src/main.c
 SRC_FILES_TEST=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c \
   src/bit_manip.c \
+  src/sha1.c \
   test/bit_manip_test.c \
   test/test_runners/bit_manip_test_runner.c \
   test/test_runners/all_tests.c

@@ -4,27 +4,7 @@
 #include <string.h>
 #include <inttypes.h>
 #include "bit_manip.h"
-
-
-//Move to .h file later:
-uint32_t ch32(uint32_t x, uint32_t y, uint32_t z);
-uint64_t ch64(uint64_t x, uint64_t y, uint64_t z);
-uint32_t parity32(uint32_t x, uint32_t y, uint32_t z);
-uint32_t maj32(uint32_t x, uint32_t y, uint32_t z);
-uint64_t maj64(uint64_t x, uint64_t y, uint64_t z);
-uint32_t sha1_f(unsigned int t, uint32_t x, uint32_t y, uint32_t z);
-uint32_t S0_256(uint32_t x);
-uint32_t S1_256(uint32_t x);
-uint32_t s0_256(uint32_t x);
-uint32_t s1_256(uint32_t x);
-uint64_t S0_512(uint64_t x);
-uint64_t S1_512(uint64_t x);
-uint64_t s0_512(uint64_t x);
-uint64_t s1_512(uint64_t x);
-uint32_t sha1_k(unsigned int t);
-void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr);
-void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M);
-//END H
+#include "sha1.h"
 
 uint32_t ch32(uint32_t x, uint32_t y, uint32_t z){
   return (x&y)^(~x&z);
@@ -112,7 +92,7 @@ uint32_t sha1_k(unsigned int t){
   exit(EXIT_FAILURE);
 }
 
-uint32_t k_256[64] ={
+uint32_t k_256[] = {
    0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5,
    0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
    0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3,
@@ -131,7 +111,7 @@ uint32_t k_256[64] ={
    0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 };
 
-uint64_t k_512[80] ={
+uint64_t k_512[] = {
   0x428a2f98d728ae22, 0x7137449123ef65cd, 0xb5c0fbcfec4d3b2f, 0xe9b5dba58189dbbc,
   0x3956c25bf348b538, 0x59f111f1b605d019, 0x923f82a4af194f9b, 0xab1c5ed5da6d8118,
   0xd807aa98a3030242, 0x12835b0145706fbe, 0x243185be4ee4b28c, 0x550c7dc3d5ffb4e2,
@@ -153,6 +133,15 @@ uint64_t k_512[80] ={
   0x28db77f523047d84, 0x32caab7b40c72493, 0x3c9ebe0a15c9bebc, 0x431d67c49c100d4c,
   0x4cc5d4becb3e42b6, 0x597f299cfc657e2a, 0x5fcb6fab3ad6faec, 0x6c44198c4a475817
 };
+
+uint32_t sha1_H0[] = {
+  0x67452301,
+  0xefcdab89,
+  0x98badcfe,
+  0x10325476,
+  0xc3d2e1f0
+};
+
 
 /** 
  * Accept length (in bytes) as 64-bit integer.
@@ -202,12 +191,6 @@ void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byt
   }
 }
 
-uint32_t sha1_H0[5] = {0x67452301,
-		       0xefcdab89,
-		       0x98badcfe,
-		       0x10325476,
-		       0xc3d2e1f0};
-
 /**
  * Single round of SHA-1.
  * 
@@ -256,42 +239,4 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   H_new[3]=d+H_old[3];
   H_new[4]=e+H_old[4];
   printf("H_new=%08x, %08x, %08x, %08x, %08x\n",H_new[0],H_new[1],H_new[2],H_new[3],H_new[4]);
-}
-
-int main(void){
-  const char* in = "This is a test.";
-  uint8_t out[64];
-  uint64_t out_len = 0;
-  printf("test.\n");
-  uint16_t x = 1;
-  int i;
-  int in_len;
-  in_len = strlen(in);
-  printf("x=%d, x<<1=%d\n",x,x<<1);
-  printf("f_2(1,1,1)=%d\n",sha1_f(2,1,1,1));
-  pad512(in_len,(uint8_t*)in,&out_len,out);
-  printf("Length = %" PRIx64 "\n", out_len);
-  printf("in = ");
-  for(i=0;i<in_len;++i){
-    printf("%02x",in[i]);
-  }
-  printf("\n");
-  byte_print(out_len,out);
-  printf("\nExpected:\n");
-  printf("61626380 00000000 00000000 ........ 00000000 00000018\n");
-
-  printf("sha1_H0[1] = %x\n",sha1_H0[1]);
-
-  uint8_t bytelist[4] = {0xa1,0xa2,0xa3,0xa4};
-  byte_print(4,bytelist);
-  printf("\nbyteto32 = %x\n",  bytes_to_uint32(bytelist));
-  uint32_t H1[5];
-  uint32_t* chunked_msg;
-  chunked_msg=bytes_to_uint32_arr(out_len,out);
-  sha1_round(sha1_H0,H1,chunked_msg);
-  printf("H=%x %x %x %x %x\n",H1[0],H1[1],H1[2],H1[3],H1[4]);
-  printf("E=afa6c8b3 a2fae957 85dc7d96 85a57835 d703ac88\n");
-  printf("%08x %08x\n",rotl32(8,0x00000001),rotl32(8,0x10000000));
-  printf("%08x %08x\n",rotr32(8,0x00000001),rotr32(8,0x10000000));
-  return EXIT_SUCCESS;
 }
