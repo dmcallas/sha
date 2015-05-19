@@ -44,6 +44,12 @@ uint32_t sha1_k(unsigned int t);
  *
  * Note too that we will only hash bytes. We are currently not
  * equipped to handle bits ending away from byte boundaries.
+ *
+ * @param len length of the input.
+ * @param byte_arr input.
+ * @param pad_len integer to be filled with the length (in bytes) 
+ *                of the padded output.
+ * @param pad_byte_arr Padded output.
  */
 void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr);
 

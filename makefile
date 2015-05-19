@@ -54,7 +54,9 @@ SRC_FILES_TEST=\
   src/bit_manip.c \
   src/sha1.c \
   test/bit_manip_test.c \
+  test/sha1_test.c \
   test/test_runners/bit_manip_test_runner.c \
+  test/test_runners/sha1_test_runner.c \
   test/test_runners/all_tests.c
 INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src
 SYMBOLS=
