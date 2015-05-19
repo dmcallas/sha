@@ -57,7 +57,7 @@ SRC_FILES_TEST=\
 INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src
 SYMBOLS=
 
-all: default
+all: clean default test
 
 default: $(TARGET_BUILD)
 
@@ -71,7 +71,8 @@ $(TARGET_TEST):
 	$(C_COMPILER) $(CFLAGS) $(INC_DIRS) $(SYMBOLS) $(SRC_FILES_TEST) -o $(TARGET_TEST)
 	./$(TARGET_TEST)
 
-
 clean:
 	$(CLEANUP) $(TARGET_BUILD) $(TARGET_TEST)
 
+get_unity:
+	git checkout https://github.com/ThrowTheSwitch/Unity.git
