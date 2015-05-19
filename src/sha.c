@@ -2,7 +2,29 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <inttypes.h>
 #include "bit_manip.h"
+
+
+//Move to .h file later:
+uint32_t ch32(uint32_t x, uint32_t y, uint32_t z);
+uint64_t ch64(uint64_t x, uint64_t y, uint64_t z);
+uint32_t parity32(uint32_t x, uint32_t y, uint32_t z);
+uint32_t maj32(uint32_t x, uint32_t y, uint32_t z);
+uint64_t maj64(uint64_t x, uint64_t y, uint64_t z);
+uint32_t sha1_f(unsigned int t, uint32_t x, uint32_t y, uint32_t z);
+uint32_t S0_256(uint32_t x);
+uint32_t S1_256(uint32_t x);
+uint32_t s0_256(uint32_t x);
+uint32_t s1_256(uint32_t x);
+uint64_t S0_512(uint64_t x);
+uint64_t S1_512(uint64_t x);
+uint64_t s0_512(uint64_t x);
+uint64_t s1_512(uint64_t x);
+uint32_t sha1_k(unsigned int t);
+void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr);
+void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M);
+//END H
 
 uint32_t ch32(uint32_t x, uint32_t y, uint32_t z){
   return (x&y)^(~x&z);
@@ -150,7 +172,7 @@ void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byt
   uint64_t base_pad_len   = len + 9;
   uint64_t zero_pad_amt   = 64 - (base_pad_len % 64);
   uint64_t full_len_bytes = base_pad_len + zero_pad_amt;
-  uint64_t full_len_bits  = full_len_bytes * 8;
+  //uint64_t full_len_bits  = full_len_bytes * 8;
   uint64_t len_bits       = len * 8;
   *pad_len = full_len_bytes;
   memcpy(pad_byte_arr,byte_arr,len);
@@ -167,7 +189,7 @@ void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byt
    * Grabs last eight bytes (64 bits) and copies in len_bits.
    */
   if(IS_BIG_ENDIAN){
-    uint64_t* end_pad = pad_byte_arr+full_len_bytes-8;
+    uint64_t* end_pad = (uint64_t*)(pad_byte_arr+full_len_bytes-8);
     *end_pad = len_bits;
   }else{
     /* Grab last eight bytes: */
@@ -236,8 +258,8 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   printf("H_new=%08x, %08x, %08x, %08x, %08x\n",H_new[0],H_new[1],H_new[2],H_new[3],H_new[4]);
 }
 
-int main(int argc, char **argv){
-  char* in = "This is a test.";
+int main(void){
+  const char* in = "This is a test.";
   uint8_t out[64];
   uint64_t out_len = 0;
   printf("test.\n");
@@ -247,8 +269,8 @@ int main(int argc, char **argv){
   in_len = strlen(in);
   printf("x=%d, x<<1=%d\n",x,x<<1);
   printf("f_2(1,1,1)=%d\n",sha1_f(2,1,1,1));
-  pad512(in_len,in,&out_len,out);
-  printf("Length = %d\n", out_len);
+  pad512(in_len,(uint8_t*)in,&out_len,out);
+  printf("Length = %" PRIx64 "\n", out_len);
   printf("in = ");
   for(i=0;i<in_len;++i){
     printf("%02x",in[i]);

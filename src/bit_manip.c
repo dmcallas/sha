@@ -34,7 +34,7 @@ uint64_t rotl64(unsigned int n, uint64_t x){
 }
 
 void byte_print(uint64_t len, uint8_t* bytes){
-  int i;
+  unsigned int i;
   for(i=0;i<len;++i){
     if(i%8 == 0 && i != 0){
       printf(" ");
