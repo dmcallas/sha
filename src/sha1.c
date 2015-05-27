@@ -213,8 +213,7 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
     W[t]=M[t];
   }
   for(t=16;t<80;++t){
-    printf("%d,",t);
-    rotl32(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
+    W[t]=rotl32(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
   }
 
   /* Initialize the working variables */
