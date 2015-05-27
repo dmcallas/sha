@@ -35,8 +35,12 @@ TEST(bit_manip, rotr32)
   TEST_ASSERT_EQUAL_UINT32(0x56781234, rotr32(16,0x12345678));
 }
 
+
 TEST(bit_manip, rotl64)
 {
+  #ifndef __LP64__
+  TEST_IGNORE_MESSAGE("Ignoring 64-bit test");
+  #endif
   // Ensure shifting
   TEST_ASSERT_EQUAL_UINT64(0x0000000000000002, rotl64(1,0x0000000000000001));
   // Ensure wrap-around
@@ -44,10 +48,14 @@ TEST(bit_manip, rotl64)
   
   TEST_ASSERT_EQUAL_UINT64(0x1234567890abcdef, rotl64(64,0x1234567890abcdef));
   TEST_ASSERT_EQUAL_UINT64(0x90abcdef12345678, rotl64(32,0x1234567890abcdef));
+
 }
 
 TEST(bit_manip, rotr64)
 {
+  #ifndef __LP64__
+  TEST_IGNORE_MESSAGE("Ignoring 64-bit test");
+  #endif
   // Ensure wrap-around
   TEST_ASSERT_EQUAL_UINT64(0x8000000000000000, rotr64(1,0x0000000000000001));
   // Ensure shifting
@@ -68,8 +76,12 @@ TEST(bit_manip, bytes_to_uint32)
 
 TEST(bit_manip, bytes_to_uint64)
 {
+  #ifndef __LP64__
+  TEST_IGNORE_MESSAGE("Ignoring 64-bit test");
+  #else
   uint8_t bytes[8]={0x81,0x18,0xf0,0x0f,0xff,0x00,0xaa,0xcc};
   TEST_ASSERT_EQUAL_UINT64(0x8118f00fff00aacc, bytes_to_uint64(bytes));
+  #endif
 }
 
 TEST(bit_manip, bytes_to_uint32_arr)

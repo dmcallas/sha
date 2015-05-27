@@ -35,6 +35,7 @@ TEST(sha1, ch32_and_ch64)
 				0b10101010
 				)
 			   );
+  #ifdef __LP64__
   TEST_ASSERT_EQUAL_UINT64(
 			   0b11001010,
 			   ch64(
@@ -43,6 +44,7 @@ TEST(sha1, ch32_and_ch64)
 				0b10101010
 				)
 			   );
+  #endif
 }
 
 TEST(sha1, parity32)
@@ -90,6 +92,8 @@ TEST(sha1, maj32_and_maj64)
 				0b10101010
 				)
 			   );
+
+  #ifdef __LP64__
   TEST_ASSERT_EQUAL_UINT64(
 			   0b11101000,
 			   maj64(
@@ -98,6 +102,7 @@ TEST(sha1, maj32_and_maj64)
 				0b10101010
 				)
 			   );
+  #endif
 }
 
 TEST(sha1, sha1_f)
