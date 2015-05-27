@@ -143,7 +143,7 @@ uint32_t sha1_H0[] = {
 };
 
 
-/** 
+/**
  * Accept length (in bytes) as 64-bit integer.
  * Note that the byte array will NOT respect zero termination.
  *
@@ -152,12 +152,12 @@ uint32_t sha1_H0[] = {
  *
  * @param len length of the input.
  * @param byte_arr input.
- * @param pad_len integer to be filled with the length (in bytes) 
+ * @param pad_len integer to be filled with the length (in bytes)
  *                of the padded output.
  * @param pad_byte_arr Padded output.
  */
 void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr){
-  /* 
+  /*
    * Calculate padding.
    * start pad is always 1 byte (0b10000000).
    * end pad is always 8 bytes (64-bits).
@@ -198,9 +198,9 @@ void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byt
 
 /**
  * Single round of SHA-1.
- * 
- * @param H_old initial hash values: 5 32-bit integers 
- * @param H_new end of round hash values: 5 32-bit integers 
+ *
+ * @param H_old initial hash values: 5 32-bit integers
+ * @param H_new end of round hash values: 5 32-bit integers
  * @param M message blocks: 16 32-bit integers
  * @return Next set of hash values.
  */
@@ -208,17 +208,15 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   /* Initialize the message schedule */
   uint32_t W[80];
   int t;
-  printf("\n|");
+
   for(t=0;t<16;++t){
     W[t]=M[t];
-    printf("%08x|%d|",W[t],t);
   }
-  printf("\n");
   for(t=16;t<80;++t){
     printf("%d,",t);
     rotl32(1,W[t-3] ^ W[t-8] ^ W[t-14] ^ W[t-16]);
   }
-  printf("\n");
+
   /* Initialize the working variables */
   uint32_t a, b, c, d, e, T;
   a=H_old[0];
@@ -227,7 +225,6 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   d=H_old[3];
   e=H_old[4];
   /* Perform work */
-  printf("a=%08x, b=%08x, c=%08x, d=%08x, e=%08x\n",a,b,c,d,e);
   printf("H_old=%08x, %08x, %08x, %08x, %08x\n",H_old[0],H_old[1],H_old[2],H_old[3],H_old[4]);
   for(t=0;t<80;++t){
     T=rotl32(5,a)+sha1_f(t,b,c,d)+e+sha1_k(t)+W[t];
@@ -236,7 +233,6 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
     c=rotl32(30,b);
     b=a;
     a=T;
-    printf("a=%08x, b=%08x, c=%08x, d=%08x, e=%08x\n",a,b,c,d,e);
   }
   H_new[0]=a+H_old[0];
   H_new[1]=b+H_old[1];

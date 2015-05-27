@@ -124,3 +124,4 @@ TEST(sha1, pad512_single_block)
   }
   TEST_ASSERT_EQUAL_UINT8(0b11000,padded[63]); // end of padding
 }
+
