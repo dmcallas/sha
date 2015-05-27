@@ -1,4 +1,12 @@
 *~
+
+Unity
+
+# Generated executables
 sha
 all_tests
-Unity
+
+# Generated Doxygen folders:
+docbook/
+html/
+latex/
