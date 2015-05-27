@@ -63,10 +63,30 @@ void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byt
  */
 void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M);
 
+/**
+ * SHA1 hash
+ * @param result input buffer of length at least 40 for the 
+ *          hex-encoded SHA-1 hash.
+ * @param len Length of the array of bytes.
+ * @param M message as an array of bytes.
+ * @return 0 if successful.
+ */
+int sha1(char* result, unsigned int len, uint8_t* bytes);
+
+/**
+ * SHA1 hash
+ * @param result input buffer of length at least 41 for the 
+ *          hex-encoded SHA-1 hash.
+ * @param M message as null-terminated string.
+ * @return 0 if successful.
+ */
+int sha1_string(char* result, const char* bytes);
+
 extern uint32_t k_256[];
 
 extern uint64_t k_512[];
 
 extern uint32_t sha1_H0[];
+
 
 #endif // SHA1_H_

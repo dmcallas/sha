@@ -156,7 +156,7 @@ uint32_t sha1_H0[] = {
  *                of the padded output.
  * @param pad_byte_arr Padded output.
  */
-void pad512(uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr){
+void pad512(const uint64_t len, uint8_t* byte_arr, uint64_t* pad_len, uint8_t* pad_byte_arr){
   /*
    * Calculate padding.
    * start pad is always 1 byte (0b10000000).
@@ -208,7 +208,6 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   /* Initialize the message schedule */
   uint32_t W[80];
   int t;
-
   for(t=0;t<16;++t){
     W[t]=M[t];
   }
@@ -224,7 +223,6 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   d=H_old[3];
   e=H_old[4];
   /* Perform work */
-  printf("H_old=%08x, %08x, %08x, %08x, %08x\n",H_old[0],H_old[1],H_old[2],H_old[3],H_old[4]);
   for(t=0;t<80;++t){
     T=rotl32(5,a)+sha1_f(t,b,c,d)+e+sha1_k(t)+W[t];
     e=d;
@@ -238,5 +236,47 @@ void sha1_round(uint32_t* H_old, uint32_t* H_new, uint32_t* M){
   H_new[2]=c+H_old[2];
   H_new[3]=d+H_old[3];
   H_new[4]=e+H_old[4];
-  printf("H_new=%08x, %08x, %08x, %08x, %08x\n",H_new[0],H_new[1],H_new[2],H_new[3],H_new[4]);
+}
+
+/**
+ * SHA1 hash
+ * @param result input buffer of length at least 40 for the 
+ *          hex-encoded SHA-1 hash.
+ * @param len Length of the array of bytes.
+ * @param M message as an array of bytes.
+ * @return 0 if successful.
+ */
+int sha1(char* result, unsigned int len, uint8_t* bytes){
+  uint8_t out[len+64];
+  uint64_t out_len = 0;
+  unsigned int i;
+
+  pad512(len,bytes,&out_len,out);
+
+  uint32_t* H_old=(uint32_t*)malloc(5*sizeof(uint32_t));
+  uint32_t* H_new=(uint32_t*)malloc(5*sizeof(uint32_t));
+  uint32_t* H_tmp;
+  uint32_t* chunked_msg;
+  
+  for(i=0;i<5;++i){
+    H_old[i]=sha1_H0[i];
+  }
+  chunked_msg=bytes_to_uint32_arr(out_len,out);
+
+  for(i=0;i< out_len/(16*4);++i){
+    uint32_t* next_chunk = chunked_msg+i*16;
+    sha1_round(H_old,H_new,next_chunk);
+    // Swap old and new hashes:
+    H_tmp=H_new;
+    H_new=H_old;
+    H_old=H_tmp;
+  }
+  sprintf(result,"%08x%08x%08x%08x%08x",H_old[0],H_old[1],H_old[2],H_old[3],H_old[4]);
+  free(H_old);
+  free(H_new);
+  return 0;
+}
+
+int sha1_string(char* result, const char* bytes){
+  return sha1(result,strlen(bytes),(uint8_t*)bytes);
 }
