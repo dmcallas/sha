@@ -6,6 +6,7 @@ static void RunAllTests(void)
   RUN_TEST_GROUP(sha);
   RUN_TEST_GROUP(sha1);
   RUN_TEST_GROUP(sha256);
+  RUN_TEST_GROUP(sha512);
 }
 
 int main(int argc, const char * argv[])

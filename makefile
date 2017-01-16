@@ -49,6 +49,7 @@ SRC_FILES_BUILD=\
   src/sha.c \
   src/sha1.c \
   src/sha256.c \
+  src/sha512.c \
   src/main.c
 SRC_FILES_TEST=\
   $(UNITY_ROOT)/src/unity.c \
@@ -57,14 +58,17 @@ SRC_FILES_TEST=\
   src/sha.c \
   src/sha1.c \
   src/sha256.c \
+  src/sha512.c \
   test/bit_manip_test.c \
   test/sha_test.c \
   test/sha1_test.c \
   test/sha256_test.c \
+  test/sha512_test.c \
   test/test_runners/bit_manip_test_runner.c \
   test/test_runners/sha_test_runner.c \
   test/test_runners/sha1_test_runner.c \
   test/test_runners/sha256_test_runner.c \
+  test/test_runners/sha512_test_runner.c \
   test/test_runners/all_tests.c
 INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src
 SYMBOLS=
