@@ -62,4 +62,11 @@ uint32_t* bytes_to_uint32_arr(uint64_t len, uint8_t* bytes);
  */
 uint64_t bytes_to_uint64(uint8_t* bytes);
 
+/**
+ * Convert bytes to array of 64-bit integers.
+ * @param len Length in bytes; Must be divisible by eight.
+ * @param bytes Bytes for conversion
+ */
+uint64_t* bytes_to_uint64_arr(uint64_t len, uint8_t* bytes);
+
 #endif // BIT_MANIP_H_

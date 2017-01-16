@@ -97,3 +97,18 @@ uint64_t bytes_to_uint64(uint8_t* bytes){
   }
   return result;
 }
+
+
+/**
+ * Convert bytes to array of 64-bit integers.
+ * @param len Length in bytes
+ * @param bytes Bytes for conversion
+ */
+uint64_t* bytes_to_uint64_arr(uint64_t len, uint8_t* bytes){
+  uint64_t* words = (uint64_t*)malloc(len/8*sizeof(uint64_t));
+  uint64_t i;
+  for(i=0;i<len/8;++i){
+    words[i]=bytes_to_uint64(bytes+i*8);
+  }
+  return words;
+}
