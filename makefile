@@ -46,16 +46,20 @@ TARGET_BUILD_F=sha
 TARGET_BUILD = $(TARGET_BUILD_F)$(TARGET_EXTENSION)
 SRC_FILES_BUILD=\
   src/bit_manip.c \
+  src/sha.c \
   src/sha1.c \
   src/main.c
 SRC_FILES_TEST=\
   $(UNITY_ROOT)/src/unity.c \
   $(UNITY_ROOT)/extras/fixture/src/unity_fixture.c \
   src/bit_manip.c \
+  src/sha.c \
   src/sha1.c \
   test/bit_manip_test.c \
+  test/sha_test.c \
   test/sha1_test.c \
   test/test_runners/bit_manip_test_runner.c \
+  test/test_runners/sha_test_runner.c \
   test/test_runners/sha1_test_runner.c \
   test/test_runners/all_tests.c
 INC_DIRS=-Isrc -I$(UNITY_ROOT)/src -I$(UNITY_ROOT)/extras/fixture/src

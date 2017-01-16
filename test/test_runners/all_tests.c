@@ -3,6 +3,7 @@
 static void RunAllTests(void)
 {
   RUN_TEST_GROUP(bit_manip);
+  RUN_TEST_GROUP(sha);
   RUN_TEST_GROUP(sha1);
 }
 
