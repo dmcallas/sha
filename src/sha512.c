@@ -64,7 +64,9 @@ void sha512_round(uint64_t* H_old, uint64_t* H_new, uint64_t* M){
 }
 
 int sha512(char* result, unsigned int len, uint8_t* bytes){
-  uint8_t out[len+64];
+  // Reserve enough space for all padding:
+  uint8_t out[len+128];
+
   uint64_t out_len = 0;
   unsigned int i;
 
