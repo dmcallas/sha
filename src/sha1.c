@@ -6,6 +6,15 @@
 #include "bit_manip.h"
 #include "sha.h"
 #include "sha1.h"
+
+uint32_t sha1_H0[] = {
+  0x67452301,
+  0xefcdab89,
+  0x98badcfe,
+  0x10325476,
+  0xc3d2e1f0
+};
+
 uint32_t sha1_f(unsigned int t, uint32_t x, uint32_t y, uint32_t z){
   if(t<=19){
     return ch32(x,y,z);
@@ -39,14 +48,6 @@ uint32_t sha1_k(unsigned int t){
   fprintf(stderr, "Invalid call: f_t where t>79.\n");
   exit(EXIT_FAILURE);
 }
-
-uint32_t sha1_H0[] = {
-  0x67452301,
-  0xefcdab89,
-  0x98badcfe,
-  0x10325476,
-  0xc3d2e1f0
-};
 
 /**
  * Single round of SHA-1.
